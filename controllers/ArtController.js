@@ -6,6 +6,7 @@
 
 
 // const AddArt  = async( req, res) =>{
+//     //Const 
 //     const {title,description , estimated_value, category,  availability, is_active, image} = req.body;
      
 //     const add_query = "INSERT INTO exhibitions (ex_title,ex_date ,ex_space, ex_category,  ex_status) VALUES (?, ?, ?, ?, ?)";
