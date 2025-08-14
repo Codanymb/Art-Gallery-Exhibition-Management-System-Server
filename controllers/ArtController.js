@@ -1,88 +1,97 @@
-// const jwt = require ("jsonwebtoken");
-// const {db} = require ("../database/db");
-// const bodyParser = require("body-parser");
+const jwt = require ("jsonwebtoken");
+const {db} = require ("../database/db");
+const bodyParser = require("body-parser");
 
 
-
-
-// const AddArt  = async( req, res) =>{
-//     //Const 
-//     const {title,description , estimated_value, category,  availability, is_active, image} = req.body;
+const AddArt  = async( req, res) =>{
+    const {title,description ,id_number ,estimated_value, category, availability, is_active, image} = req.body;
      
-//     const add_query = "INSERT INTO exhibitions (ex_title,ex_date ,ex_space, ex_category,  ex_status) VALUES (?, ?, ?, ?, ?)";
-//     db.run(add_query, [ex_title,ex_date ,ex_space, ex_category,  ex_status], function(err){
 
-//         if(err){
-//             console.error('Error inserting into Exhibtion table:',  err.message)
-//             return res.status(500).json({"msg": "Internal server error", "Statu": false});
-//         }
-//         res.status(201).json({"Message" : "Successfully created the Exhibition", "Status": true})
+    if (!title || !description || !id_number ||!estimated_value || !category || !availability || !is_active || !image)
+    {
+        return res.status(400).json({msg:  "fill all the fields", status: false})
+    }
 
-      
-//     })
-// }
+    const checkQuery = "SELECT artist_id FROM artists WHERE id_number = ? AND  is_active= 'yes'";
+    db.get(checkQuery,[id_number] , (err, artist) => {
+        if(err){
+            console.error("Database error", err.message);
+            return res.status(500).json({msg: "Internal server error", status: false});
+        }
 
+        if(!artist){
+            return res.status(400).json({msg: "No artist with that id found", status:false});
+        }
 
-// const getAllEx = (req,res) => {
+        const add_query = "INSERT INTO art_pieces (title,description ,artist_id ,estimated_value, category, availability, is_active, image) VALUES (?,?,?,?,?,?,?,?)";
 
-//     const getQuery = "SELECT ex_title, ex_date  , ex_space , ex_category, ex_status FROM exhibitions";
-//     db.all(getQuery, [], (err,rows) => {
-//         if (err){
-//             return res.status(500).json({ error: "Getting all the artists failed", details: err.message})
-//         };
-//         return res.status(200).json({ users: rows})
-//     })
-// }
+        db.run(add_query, [title,description ,artist.artist_id ,estimated_value, category, availability, is_active, image], function(err){
 
+        if(err){
+            console.error('Error inserting into art piece table:',  err.message)
+            return res.status(500).json({"msg": "cannot add art piece", "Status": false});
+        }
+       return res.status(201).json({"msg" : "Successfully Added the art peice", "Status": true})
+       
 
-// const updateEx = (req, res) => {
-//     const exhibition_id = req.params.exhibition_id;
-//     const {ex_title,ex_date , ex_space, ex_category, ex_status} = req.body;
+    });
+    }); 
+};
 
-//     const update_query = `
-//         UPDATE exhibitions 
-//         SET ex_title = ?, ex_date = ?, ex_status = ?, ex_category = ?, ex_space=?
-//         WHERE exhibition_id = ? `;
+const getAllArts = (req,res) => {
 
-//     db.run(update_query, [ex_title, ex_date, ex_space,ex_category, ex_status, exhibition_id], function(err) {
-//         if (err) {
-//             return res.status(500).json({ msg: "Internal server error", error: err.message });
-//         }
+    const getQuery = "SELECT title,description ,artist_id ,estimated_value, category, availability, is_active, image FROM art_pieces";
+    db.all(getQuery, [], (err,rows) => {
+        if (err){
+            return res.status(500).json({ error: "Getting all the art Pieces failed", details: err.message})
+        };
+        return res.status(200).json({ users: rows})
+    })
+}
 
-//         if (this.changes === 0) {
-//             return res.status(404).json({ msg: "Exhibition not found or no changes made" });
-//         }
+const updateArt = (req, res) => {
+    const artist_id = req.params.artist_id;
+    const { first_name, surname, id_number, is_active} = req.body;
 
-//         res.json({ msg: "Exhibition updated successfully", status: true });
-//     });
-// };
+    const update_query = `
+        UPDATE artists 
+        SET first_name = ?, surname = ?, is_active = ? , id_number = ?
+        WHERE artist_id = ? `;
 
+    db.run(update_query, [first_name, surname, is_active,id_number,  artist_id], function(err) {
+        if (err) {
+            return res.status(500).json({ msg: "Internal server error", error: err.message });
+        }
 
-// const deleteEx = (req,res) => {
-//     const exhibition_id= req.params.exhibition_id;
+        if (this.changes === 0) {
+            return res.status(404).json({ msg: "Artist not found or no changes made" });
+        }
 
-//     const deleteQuery = "DELETE FROM exhibitions WHERE exhibition_id=?";
+        res.json({ msg: "Artist updated successfully", status: true });
+    });
+};
 
-//     db.run(deleteQuery, [exhibition_id], function(err){
+const deleteArt = (req,res) => {
+    const artist_id= req.params.artist_id;
 
-//       if(err){
-//         return res.status(500).json({error: "Failed to delete", details: err.message});
-//       }
+    const deleteQuery = "DELETE FROM artists WHERE artist_id=?";
 
-//       if(this.changes===0){
-//         return res.status(404).json({message: "Exhibition not found"})
-//       }
+    db.run(deleteQuery, [artist_id], function(err){
 
-//       return res.status(200).json({message: "Exhibition Deleted!"})
-//     })
-// }
+      if(err){
+        return res.status(500).json({error: "Failed to delete", details: err.message});
+      }
 
+      if(this.changes===0){
+        return res.status(404).json({message: "Artist not found"})
+      }
 
+      return res.status(200).json({message: "Artist Deleted!"})
+    })
+}
 
-
-
-//  module.exports ={
-//           AddExhibition,getAllEx,updateEx, deleteEx
-//     }
+ module.exports ={
+          AddArt
+    }
 
 
