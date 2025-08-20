@@ -35,16 +35,24 @@ app.use("/api/auth", authRoute);
 
 app.use("/api/AddExhibition", ExRoute);
 app.use("/api/getAllEx",ExRoute)
+app.use("/api/getEachEx",ExRoute)
 app.use("/api/updateEx",ExRoute)
 app.use("/api/deleteEx",ExRoute)
 
 
 app.use("/api/AddArtist",ArtistRoute) 
 app.use("/api/getAllArtists",ArtistRoute) 
+app.use("/api/getEachArtist",ArtistRoute) 
 app.use("/api/updateArtist",ArtistRoute) 
 app.use("/api/deleteArtist",ArtistRoute)
 
-app.use("/api/AddArt",ArtRoute)
+app.use("/api/AddArt",ArtRoute) 
+app.use("/api/getAllArts",ArtRoute) 
+app.use("/api/updateArt",ArtRoute) 
+app.use("/api/deleteArt",ArtRoute)
+app.use("/api/getEachArt",ArtRoute) 
+
+
 
 
 

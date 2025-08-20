@@ -29,6 +29,22 @@ const getAllArtists = (req,res) => {
         return res.status(200).json({ users: rows})
     })
 }
+const getEachArtist = (req, res) => {
+    const artist_id = req.params.artist_id;
+
+    const getQuery = "SELECT * FROM artists WHERE artist_id = ?"
+
+    db.get(getQuery, [artist_id], (err, artist) =>{
+        if(err){
+            return res.json({"e1": err})
+        }
+        if(!artist){
+            return res.json({"message": "no artist found"})
+        }
+        return res.json({"artist": artist})
+    })
+}
+
 
 const updateArtist = (req, res) => {
     const artist_id = req.params.artist_id;
@@ -72,7 +88,7 @@ const deleteArtist = (req,res) => {
 }
 
  module.exports ={
-          AddArtist, getAllArtists,updateArtist, deleteArtist
+          AddArtist, getAllArtists,updateArtist, deleteArtist,getEachArtist
     }
 
 

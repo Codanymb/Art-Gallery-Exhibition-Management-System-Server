@@ -35,6 +35,22 @@ const getAllEx = (req,res) => {
     })
 }
 
+const getEachEx = (req, res) => {
+    const exhibition_id = req.params.exhibition_id;
+
+    const getQuery = "SELECT * FROM exhibitions WHERE exhibition_id = ?"
+
+    db.get(getQuery, [exhibition_id], (err, Exhibition) =>{
+        if(err){
+            return res.json({"e1": err})
+        }
+        if(!Exhibition){
+            return res.json({"message": "no Exhibition found"})
+        }
+        return res.json({"Exhibition": Exhibition})
+    })
+}
+
 
 const updateEx = (req, res) => {
     const exhibition_id = req.params.exhibition_id;
@@ -83,7 +99,7 @@ const deleteEx = (req,res) => {
 
 
  module.exports ={
-          AddExhibition,getAllEx,updateEx, deleteEx
+          AddExhibition,getAllEx,updateEx, deleteEx,getEachEx
     }
 
 
