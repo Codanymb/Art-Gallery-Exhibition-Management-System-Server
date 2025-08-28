@@ -1,7 +1,7 @@
 const express = require("express");
 const {AddArtist, getAllArtists, updateArtist, deleteArtist, getEachArtist}= require ("../controllers/ArtistController");
 const router = express.Router();
-const { owner, authenticatedUser , Clerk} = require("../middleware/authMiddleware");
+const { owner, authenticatedUser , clerk} = require("../middleware/authMiddleware");
 
 router.post("/AddA" ,owner,  AddArtist);
 router.get("/get" ,owner,  getAllArtists);

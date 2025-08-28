@@ -22,6 +22,7 @@ const AddArt  = async( req, res) =>{
         if(!artist){
             return res.status(400).json({msg: "No artist with that id found", status:false});
         }
+        
 
         const add_query = "INSERT INTO art_pieces (title,description ,artist_id ,estimated_value, category, availability, is_active, image) VALUES (?,?,?,?,?,?,?,?)";
 

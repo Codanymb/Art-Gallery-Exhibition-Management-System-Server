@@ -9,6 +9,9 @@ const authRoute = require("./routes/authRoute")
 const ExRoute = require ("./routes/ExRoute")
 const ArtistRoute = require ("./routes/ArtistRoute")
 const ArtRoute = require ("./routes/ArtRoute")
+const RegRoute = require ("./routes/RegRoute")
+const CartRoute = require ("./routes/CartRoute")
+const OrderRoute = require ("./routes/OrderRoute")
 
 
 
@@ -33,32 +36,46 @@ const db = new sqlite3.Database("./Art.db", sqlite3.OPEN_READWRITE, (err) => {
 
 app.use("/api/auth", authRoute);
 
+//EXHIBITIONS
 app.use("/api/AddExhibition", ExRoute);
 app.use("/api/getAllEx",ExRoute)
 app.use("/api/getEachEx",ExRoute)
 app.use("/api/updateEx",ExRoute)
 app.use("/api/deleteEx",ExRoute)
+app.use("/api/Assign", ExRoute);
 
-
+//ARTISTS
 app.use("/api/AddArtist",ArtistRoute) 
 app.use("/api/getAllArtists",ArtistRoute) 
 app.use("/api/getEachArtist",ArtistRoute) 
 app.use("/api/updateArtist",ArtistRoute) 
 app.use("/api/deleteArtist",ArtistRoute)
 
+//ART
 app.use("/api/AddArt",ArtRoute) 
 app.use("/api/getAllArts",ArtRoute) 
 app.use("/api/updateArt",ArtRoute) 
 app.use("/api/deleteArt",ArtRoute)
 app.use("/api/getEachArt",ArtRoute) 
 
+//REGISTRATIONS
+app.use("/api/registerForExhibition",RegRoute) 
+app.use("/api/getAllReg",RegRoute) 
+app.use("/api/getEachReg",RegRoute) 
 
 
+//CART
+app.use("/api/createCart", CartRoute);
+app.use("/api/addToCart", CartRoute);
+app.use("/api/removeFromCart", CartRoute);
+app.use("/api/viewCart", CartRoute);
+app.use("/api/checkOut", CartRoute);
 
-
- 
-
-
+//ORDERS
+app.use("/api/getAllOrders", OrderRoute);
+app.use("/api/UserOrder", OrderRoute);
+app.use("/api/getEachOrder", OrderRoute
+);
 
 
 module.exports = db;

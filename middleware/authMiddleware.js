@@ -42,29 +42,32 @@ const owner = (req, res, next) => {
 
 
 
-const Clerk = (req,res,next)=>{
-    
-    if(!req.headers.token) return res.json({"msg3":"Not authorized, Only Clerk allowed"});
-    const header_token = req.headers.token;
+const clerk = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ "msg3": "Not authorized, Only Clerk allowed" });
+    }
+
+    const token = authHeader.split(' ')[1]; 
 
     try {
-       const user = jwt.verify(header_token, "private_key");
-       console.log("USER: ",user);
-       
-       if(user.user_type == "clerk"){
-           req.user = user;
-           next();
+        const user = jwt.verify(token, "private_key");
+        
+        if (user.user_type !== "clerk") {
+            return res.status(403).json({ msg2: "Only The Clerk can access" });
         }
-        else{
-            return res.json({"msg2": "Only The Clerk can access"});  
-        }
+
+        req.user = user;
+        next();
     } catch (error) {
-        return res.json({"msg2":error.message});
+        return res.status(403).json({ msg2: error.message });
     }
-}
+};
+
 
 
 
 module.exports = {
-    authenticatedUser, owner,Clerk
+    authenticatedUser, owner,clerk
 };

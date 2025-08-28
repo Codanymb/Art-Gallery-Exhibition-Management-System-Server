@@ -62,44 +62,46 @@ const register = async (req, res) => {
 
 
 const login = (req, res) => {
-    const {email,password} = req.body;
-    
-    const user_query = "SELECT * FROM USER_TABLE Where email = ?";
+    const { email, password } = req.body;
 
-    db.get(user_query, [email], (err,user) =>{
-        console.log("The user is: ", user)
+    const user_query = "SELECT * FROM USER_TABLE WHERE email = ?";
 
-        if(user){
-            const real_pass = sha256(password);
-
-            if(real_pass === user.password){
-                const payload = {id: user.id, user_type:user.user_type};
-                console.log("Payload: ",payload);
-
-                const token= jwt.sign(payload, "private_key");
-                console.log("Token: ", token);
-
-                const decoded = jwt.decode(token);
-                console.log("Decoded Token", decoded);
-                
-               return res.status(200).json({
-                status: true,
-                 message: "Successfully logged in",
-                 token, 
-                 payload,
-});
-
-
-            }
-            else{
-                return res.json("Wrong credentials");
-            }
+    db.get(user_query, [email], (err, user) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            return res.status(500).json({
+                status: false,
+                message: "Internal server error"
+            });
         }
-        else {
-            return res.json("Wrong credentials");
+
+        if (!user) {
+            // User not found
+            return res.status(401).json({
+                status: false,
+                message: "Wrong credentials"
+            });
         }
-    })
-}
+
+        const hashedPass = sha256(password);
+        if (hashedPass !== user.password) {
+            return res.status(401).json({
+                status: false,
+                message: "Wrong credentials"
+            });
+        }
+
+        const payload = { id: user.user_id, user_type: user.user_type };
+        const token = jwt.sign(payload, "private_key");
+
+        return res.status(200).json({
+            status: true,
+            message: "Successfully logged in",
+            token,
+            payload
+        });
+    });
+};
 
 
 process.on('SIGINT', () => {

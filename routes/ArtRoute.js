@@ -1,7 +1,7 @@
 const express = require("express");
 const {AddArt,getAllArts, updateArt, deleteArt, getEachArt}= require ("../controllers/ArtController");
 const router = express.Router();
-const { owner, authenticatedUser , Clerk} = require("../middleware/authMiddleware");
+const { owner, authenticatedUser , clerk} = require("../middleware/authMiddleware");
 
 router.post("/AddArt" ,owner,  AddArt);
 router.get("/getArt" ,owner,  getEachArt);
